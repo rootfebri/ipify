@@ -1,0 +1,36 @@
+{
+  "name": "rootfebri/ipify",
+  "description": "PHP client library for ipify: A Simple IP Address API.",
+  "type": "library",
+  "require": {
+    "php": "^8.2",
+    "guzzlehttp/guzzle": "^7.9"
+  },
+  "license": "MIT",
+  "version": "0.1.0",
+  "autoload": {
+    "psr-4": {
+      "IPify\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Febri",
+      "email": "root.febri@gmail.com"
+    }
+  ],
+  "require-dev": {
+    "pestphp/pest": "^3.8",
+    "vlucas/phpdotenv": "^5.6"
+  },
+  "config": {
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    }
+  }
+}
