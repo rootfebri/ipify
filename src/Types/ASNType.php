@@ -2,6 +2,8 @@
 
 namespace IPify\Types;
 
+use BadMethodCallException;
+
 /**
  * Autonomous System type, Cases:
  *  "Cable/DSL/ISP"
@@ -12,6 +14,15 @@ namespace IPify\Types;
  *  "Not Disclosed"
  *  "NSP"
  *  "Route Server"
+ * @method bool isCable_DSL_ISP()
+ * @method bool isContent()
+ * @method bool isEducational_Research()
+ * @method bool isEnterprise()
+ * @method bool isNon_Profit()
+ * @method bool isNot_Disclosed()
+ * @method bool isNSP()
+ * @method bool isRoute_Server()
+ * @method bool isUnknown()
  */
 enum ASNType: string {
   case Unknown = '';
@@ -37,5 +48,26 @@ enum ASNType: string {
       'route server' => self::Route_Server,
       default => self::Unknown
     };
+  }
+
+  public function __call(string $name, array $arguments)
+  {
+    if (method_exists($this, $name)) {
+      return $this->$name(...$arguments);
+    }
+    if (str_starts_with($name, 'is')) {
+      return match (substr($name, 2)) {
+        'Cable_DSL_ISP' => $this === self::Cable_DSL_ISP,
+        'Content' => $this === self::Content,
+        'Educational_Research' => $this === self::Educational_Research,
+        'Enterprise' => $this === self::Enterprise,
+        'Non_Profit' => $this === self::Non_Profit,
+        'Not_Disclosed' => $this === self::Not_Disclosed,
+        'NSP' => $this === self::NSP,
+        'Route_Server' => $this === self::Route_Server,
+        default => false
+      };
+    }
+    throw new BadMethodCallException(sprintf('Call to undefined method %s::%s(). ', __CLASS__, $name));
   }
 }
