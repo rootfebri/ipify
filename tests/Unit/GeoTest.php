@@ -27,3 +27,12 @@ test('ip v6 address', function () {
     ->and($response->unwrap()->ip)->toBe('2001:0db8:85a3:0000:0000:8a2e:0370:7334')
     ->and($response->unwrap()->as->type)->toBe(IPify\Types\ASNType::Unknown);
 });
+
+test('ip v4 address with findip_net', function () {
+  $geo = new Geo($_ENV['IPIFY_APIKEY']);
+  $response = $geo->with_findip_net('54.161.42.12');
+  expect($response)
+    ->and($response->is_ok())->toBeTrue()
+    ->and($response->unwrap())->toBeInstanceOf(IPify\IPifyResponse::class)
+    ->and($response->unwrap()->as->type)->toBe(IPify\Types\ASNType::Content);
+});

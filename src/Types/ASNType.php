@@ -65,6 +65,7 @@ enum ASNType: string {
         'Not_Disclosed' => $this === self::Not_Disclosed,
         'NSP' => $this === self::NSP,
         'Route_Server' => $this === self::Route_Server,
+        'Unknown' => $this === self::Unknown,
         default => false
       };
     }
