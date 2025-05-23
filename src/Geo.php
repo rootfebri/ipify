@@ -34,6 +34,8 @@ class Geo {
         'Accept' => 'application/json',
         'base_uri' => self::BASE_URL,
       ],
+      'timeout' => 7,
+      'connect_timeout' => 7,
     ]);
   }
 
@@ -116,23 +118,16 @@ class Geo {
     }
 
     $baseLookup = $baseLookup->unwrap();
-    if ($baseLookup->as->type->isUnknown()) {
-      try {
-        $response = $this->client->get($this->findip_net_url($ip));
-        $body = json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
-        if (isset($body['traits'])) {
-          match ($body['traits']['user_type']) {
-            'residential', 'cellular' => $baseLookup->as->type = types\ASNType::NSP,
-            'business' => $baseLookup->as->type = types\ASNType::Cable_DSL_ISP,
-            'hosting' => $baseLookup->as->type = types\ASNType::Content,
-            default => null
-          };
-          $baseLookup->isp = $body['traits']['isp'] ?? 'N/A';
-        }
-      } catch (GuzzleException|JsonException) {
-        return $baseLookup;
+
+    try {
+      $response = $this->client->get($this->findip_net_url($ip));
+      $body = json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
+      if (isset($body['traits']['user_type']) && $body['traits']['user_type'] === 'hosting') {
+        $baseLookup->as->type = types\ASNType::Cable_DSL_ISP;
       }
+    } catch (GuzzleException|JsonException) {
     }
+
     return $baseLookup;
   }
 
